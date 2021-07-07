@@ -24,8 +24,8 @@ function drawPoint(p, a, b, color) {
 }
 function rndp() {
   var p = {
-    x: parseInt(Math.random() * w, 10),
-    y: parseInt(Math.random() * h, 10),
+    x: ~~(Math.random() * w),
+    y: ~~(Math.random() * h),
   };
   return pb.some(function (p2) {
     return p.x === p2.x && p.y === p2.y;
@@ -34,7 +34,7 @@ function rndp() {
     : p;
 }
 function start() {
-  pb = [{ x: parseInt(w / 2, 10), y: parseInt(h / 2, 10), d: 119 }];
+  pb = [{ x: ~~(w / 2), y: ~~(h / 2), d: 119 }];
   loop();
 }
 function gameOver() {
