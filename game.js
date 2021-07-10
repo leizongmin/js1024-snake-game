@@ -1,16 +1,18 @@
 (() => {
   const pointWidth = 30;
   const pointHeight = 30;
-  const horizontalSize = ~~(a.width / pointWidth);
-  const verticalSize = ~~(a.height / pointHeight);
+  const screenWidth = ~~(a.width / pointWidth) * pointWidth;
+  const screenHeight = ~~(a.height / pointHeight) * pointHeight;
+  const horizontalSize = ~~(screenWidth / pointWidth);
+  const verticalSize = ~~(screenHeight / pointHeight);
   const keyCodeMap = {
     97: { x: -1, y: 0, o: 100 }, // key [A] => [Left]
     115: { x: 0, y: 1, o: 119 }, // key [S] => [Down]
     100: { x: 1, y: 0, o: 97 }, // key [D] => [Right]
     119: { x: 0, y: -1, o: 115 }, // key [W] => [Up]
   };
-  let body = [];
-  let food = randomFood();
+  let body;
+  let food;
   let tid; // timer id, used to pause or resume the game
   addEventListener("keypress", (e) => {
     // press [Space] to pause or resume
@@ -44,12 +46,17 @@
   }
   function start() {
     body = [{ x: ~~(horizontalSize / 2), y: ~~(verticalSize / 2), d: 119 }]; // start at the screen midpoint, upward
+    food = randomFood();
     loop(); // enter game loop
   }
   function gameOver() {
     c.fillStyle = "#e96900";
     c.font = "bold 48px serif";
-    c.fillText("Game Over", (a.width - 24 * 4) / 2, (a.height - 24) / 2);
+    c.fillText(
+      "Game Over",
+      (screenWidth - 24 * 4) / 2,
+      (screenHeight - 24) / 2
+    );
     setTimeout(start, 2000);
   }
   function nextPosition(point) {
@@ -82,7 +89,7 @@
       body.pop();
     }
     c.fillStyle = "#f1fedd";
-    c.fillRect(0, 0, a.width, a.height);
+    c.fillRect(0, 0, screenWidth, screenHeight);
     drawPoint(food, "#e96900"); // draw food
     drawPoint(body[0], "#2d64b3"); // draw snake's head
     body.slice(1).forEach((p) => drawPoint(p)); // draw snake's body
