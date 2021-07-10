@@ -1,23 +1,31 @@
 (() => {
-  const horizontalSize = 20;
-  const verticalSize = 20;
-  const pointWidth = a.width / horizontalSize;
-  const pointHeight = a.height / verticalSize;
+  const pointWidth = 30;
+  const pointHeight = 30;
+  const horizontalSize = ~~(a.width / pointWidth);
+  const verticalSize = ~~(a.height / pointHeight);
   const keyCodeMap = {
-    97: { x: -1, y: 0 },
-    115: { x: 0, y: 1 },
-    100: { x: 1, y: 0 },
-    119: { x: 0, y: -1 },
-  }; // A:97, S:115, D:100, W:119
+    97: { x: -1, y: 0, o: 100 }, // key [A] => [Left]
+    115: { x: 0, y: 1, o: 119 }, // key [S] => [Down]
+    100: { x: 1, y: 0, o: 97 }, // key [D] => [Right]
+    119: { x: 0, y: -1, o: 115 }, // key [W] => [Up]
+  };
   let body = [];
   let food = randomFood();
-  let tid; // timer id, used to pause or continue the game
+  let tid; // timer id, used to pause or resume the game
   addEventListener("keypress", (e) => {
+    // press [Space] to pause or resume
     if (e.which == 32) {
       tid ? (clearTimeout(tid), (tid = null)) : loop();
     }
-    if (keyCodeMap[e.which]) {
-      body[0].d = e.which;
+    // press the direction key [A] [S] [D] [W]
+    const key = keyCodeMap[e.which];
+    if (key) {
+      const head = body[0];
+      if (body.length > 1 && key.o === head.d) {
+        // no backsliding allowed
+        return;
+      }
+      head.d = e.which;
     }
   });
   function drawPoint(p, color) {
@@ -46,7 +54,11 @@
   }
   function nextPosition(point) {
     const direction = keyCodeMap[point.d];
-    return { x: point.x + direction.x, y: point.y + direction.y, d: point.d };
+    return {
+      x: point.x + direction.x,
+      y: point.y + direction.y,
+      d: point.d,
+    };
   }
   function loop() {
     const head = nextPosition(body[0]); // get the next position
@@ -61,11 +73,6 @@
     ) {
       return gameOver();
     }
-    // for (let i = 0; i < pb.length; i++) {
-    //   if (head.x === pb[i].x && head.y === pb[i].y) {
-    //     return gameOver();
-    //   }
-    // }
     body.unshift(head); // 没有吃到食物，蛇头前进时，蛇尾要收缩
     if (food.x === head.x && food.y === head.y) {
       // if it's already eaten the food, then make next food
@@ -79,7 +86,7 @@
     drawPoint(food, "#e96900"); // draw food
     drawPoint(body[0], "#2d64b3"); // draw snake's head
     body.slice(1).forEach((p) => drawPoint(p)); // draw snake's body
-    tid = setTimeout(loop, 200 - body.length * 1.5); // compute speed
+    tid = setTimeout(loop, 150 - body.length * 1.5); // compute speed
   }
   start();
 })();
