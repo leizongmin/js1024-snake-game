@@ -2,6 +2,8 @@
 
 Snake Game, press [A] [S] [D] [W] to control, press [Space] to pause/resume
 
+Online demo: https://js1024.fun/demos/2021/10
+
 ![preview](preview.gif)
 
 JS1024 Classic Canvas Mode Download shim
